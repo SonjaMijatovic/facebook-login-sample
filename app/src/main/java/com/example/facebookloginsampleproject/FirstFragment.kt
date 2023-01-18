@@ -64,8 +64,8 @@ class FirstFragment : Fragment() {
         loginManager.logInWithReadPermissions(
             activity = context as Activity,
             permissions = listOf(
-                "public_profile",
-                "email"
+                FACEBOOK_READ_PERMISSION_PUBLIC_PROFILE,
+                FACEBOOK_READ_PERMISSION_EMAIL,
             )
         )
         loginManager.registerCallback(
@@ -101,7 +101,7 @@ class FirstFragment : Fragment() {
                 }
         }
         val parameters =
-            bundleOf("fields" to "id,name,first_name,last_name,email,picture")
+            bundleOf(FACEBOOK_GRAPH_REQUEST_FIELDS to FACEBOOK_GRAPH_REQUEST_FIELDS_VALUES)
         request.parameters = parameters
         request.executeAsync()
     }
@@ -109,5 +109,14 @@ class FirstFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    private companion object {
+        const val FACEBOOK_READ_PERMISSION_PUBLIC_PROFILE = "public_profile"
+        const val FACEBOOK_READ_PERMISSION_EMAIL = "email"
+        const val FACEBOOK_GRAPH_REQUEST_FIELDS = "fields"
+        const val FACEBOOK_GRAPH_REQUEST_FIELDS_VALUES =
+            "id,name,first_name,last_name,email,picture"
     }
 }
