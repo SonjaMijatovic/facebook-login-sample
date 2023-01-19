@@ -5,9 +5,10 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="next">Log in with Facebook</string>
 
-    <string name="auth_token_place_holder">Auth token place holder</string>
+    <string name="access_token_place_holder">Access token place holder</string>
+    <string name="auth_token_place_holder">Authentication token place holder</string>
 
-    <string name="facebook_app_id">1261590537680840</string>
-    <string name="facebook_client_token">ad0ddd0b51eb66ca5dddfa1cef331d26</string>
-    <string name="facebook_url_scheme">fb1261590537680840</string>
+    <string name="facebook_app_id">2042634382600206</string>
+    <string name="facebook_client_token">e9a297934621552a85b5338db3f7903d</string>
+    <string name="facebook_url_scheme">fb2042634382600206</string>
 </resources>

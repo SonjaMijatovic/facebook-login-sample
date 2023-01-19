@@ -1,7 +1,5 @@
 package com.example.facebookloginsampleproject
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.example.facebookloginsampleproject.databinding.FragmentFirstBinding
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -18,24 +15,23 @@ import com.facebook.FacebookException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
+@AndroidEntryPoint
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
 
+    @Inject
     lateinit var callbackManager: CallbackManager
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        callbackManager =  CallbackManager.Factory.create()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,15 +42,10 @@ class FirstFragment : Fragment() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonFirst.setOnClickListener {
+        binding.buttonLogin.setOnClickListener {
             logIn()
         }
     }
@@ -62,7 +53,7 @@ class FirstFragment : Fragment() {
     private fun logIn() {
         val loginManager = LoginManager.getInstance()
         loginManager.logInWithReadPermissions(
-            activity = context as Activity,
+            activity = requireActivity(),
             permissions = listOf(
                 FACEBOOK_READ_PERMISSION_PUBLIC_PROFILE,
                 FACEBOOK_READ_PERMISSION_EMAIL,
@@ -80,8 +71,12 @@ class FirstFragment : Fragment() {
                 }
 
                 override fun onSuccess(result: LoginResult) {
-                    Log.e("FB login", "success ${result.accessToken.token}")
-                    Log.e("FB login", "success ${result.authenticationToken?.token}")
+                    val accessTokenString = result.accessToken.token
+                    val authTokenString = result.authenticationToken?.token.toString()
+                    Log.e("FB login", "accessToken: $accessTokenString")
+                    Log.e("FB login", "authenticationToken: $authTokenString")
+                    binding.textviewAccessToken.text = accessTokenString
+                    binding.textviewAuthToken.text = authTokenString
                     getUserDetails()
                 }
             }
@@ -95,10 +90,10 @@ class FirstFragment : Fragment() {
             return
         }
         val request = GraphRequest.newMeRequest(facebookAccessToken) { _, response ->
-                val userDetailsJsonString = response?.rawResponse
-                if (userDetailsJsonString.isNullOrBlank()) {
-                    Log.e("FB getUserDetails", "Graph response - user details is null")
-                }
+            val userDetailsJsonString = response?.rawResponse
+            if (userDetailsJsonString.isNullOrBlank()) {
+                Log.e("FB getUserDetails", "Graph response - user details is null")
+            }
         }
         val parameters =
             bundleOf(FACEBOOK_GRAPH_REQUEST_FIELDS to FACEBOOK_GRAPH_REQUEST_FIELDS_VALUES)
